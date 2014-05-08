@@ -1,0 +1,225 @@
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flexbox生成工具</title>
+    <meta name="viewport" content="initial-scale=1, user-scalable=0, minimal-ui">
+<style>
+*{
+    margin: 0;
+    padding: 0;
+    /* 防止点击闪烁 */
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    /* 缩放网页，文字大小不变 */
+    -webkit-text-size-adjust:none;
+}
+li{
+    list-style: none;
+}
+
+h3{
+    text-align: center;
+}
+.wrap{
+}
+.result{
+    display:-webkit-box;
+    display:-webkit-flex;
+    display:-ms-flexbox;
+    display:flex;
+    width: 100%;
+    height: 300px;
+    line-height: 2em;
+    margin-bottom:10px;
+    background-color: #eee;
+}
+.item{
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    margin:10px;
+    border:1px solid #000;
+    background-color: red;
+    color: #fff;
+    text-align: center;
+}
+.select_item{
+    margin-bottom: 10px;
+}
+.code_result{
+    margin: 10px;
+    padding: 10px;
+    border:1px solid #ccc;
+    word-break:break-all;
+    word-wrap:break-word;
+}
+</style>
+</head>
+<body>
+<h2><a href="" target="_blank">移动端网页flex</a></h2>
+<h3>Flexbox生成工具</h3>
+    <div class="wrap">
+        <div class="result">
+            <div class="item">A</div>
+            <div class="item">B</div>
+            <div class="item">C</div>
+        </div>
+        <div class="operate"> 
+            <div class="select_item">
+                <label for="flex-direction">伸缩流的方向：</label>
+                <select id="flex-direction">
+                    <option value="row">row</option>
+                    <option value="column">column</option>
+                </select>
+            </div>
+            <div class="select_item">
+                <label for="justify-content">主轴对齐：</label>
+                <select id="justify-content">
+                    <option value="flex-start">flex-start</option>
+                    <option value="flex-end">flex-end</option>
+                    <option value="center">center</option>
+                    <option value="space-between">space-between</option>
+                </select>
+            </div>
+            <div class="select_item">
+                <label for="align-items">侧轴对齐：</label>
+                <select id="align-items">
+                    <option value="flex-start">flex-start</option>
+                    <option value="flex-end">flex-end</option>
+                    <option value="center">center</option>
+                    <option value="stretch">stretch</option>
+                </select>
+            </div>
+        </div>
+        <div class="code">
+            <div>
+                <button class="code_btn" type="button">生成代码</button>
+            </div>
+            <pre class="code_result"></pre>
+        </div>
+    </div>
+<script src="zepto.min.js"></script>
+<script>
+    var $result = $('.result'),
+        $flexDirection = $('#flex-direction'),
+        _flexDirectionCode = '',
+        $justifyContent = $('#justify-content'),
+        _justifyContentCode = '',
+        $alignItems = $('#align-items'),
+        _alignItemsCode = '',
+        $codeBtn = $('.code_btn'),
+        $codeResult = $('.code_result'),
+        _codeResult = '';
+    // 伸缩流的方向
+    $flexDirection.on('change',function(){
+        var _val = $(this).val(),
+            _align_items = $alignItems.val();
+        if(_align_items == 'stretch'){
+            if(_val == 'row'){
+                $result.css({'-webkit-flex-direction':_val,'flex-direction':_val,'-webkit-box-orient':'horizontal','box-orient':'horizontal'});
+                changeCss('horizontal');
+                $result.find('.item').css({'height':'auto','width':''});
+            }else if(_val == 'column'){
+                $result.css({'-webkit-flex-direction':_val,'flex-direction':_val,'-webkit-box-orient':'vertical','box-orient':'vertical'});
+                changeCss('vertical');
+                $result.find('.item').css({'width':'auto','height':''});
+            }
+        }else{
+            if(_val == 'row'){
+                $result.css({'-webkit-flex-direction':_val,'flex-direction':_val,'-webkit-box-orient':'horizontal','box-orient':'horizontal'});
+                changeCss('horizontal');
+            }else if(_val == 'column'){
+                $result.css({'-webkit-flex-direction':_val,'flex-direction':_val,'-webkit-box-orient':'vertical','box-orient':'vertical'});
+                changeCss('vertical');
+            }
+        }
+        // 组合结果代码
+        function changeCss(oldVal){
+            _flexDirectionCode = '\n&nbsp;&nbsp;&nbsp;&nbsp;/* 伸缩流的方向 */'
+                                 +'\n&nbsp;&nbsp;&nbsp;&nbsp;-webkit-flex-direction:'+_val+';'
+                                 +'\n&nbsp;&nbsp;&nbsp;&nbsp;flex-direction:'+_val+';'
+                                 +'\n&nbsp;&nbsp;&nbsp;&nbsp;-webkit-box-orient:'+oldVal+';'
+                                 +'\n&nbsp;&nbsp;&nbsp;&nbsp;box-orient:'+oldVal+';';
+        }
+    })
+    // 主轴对齐
+    $justifyContent.on('change',function(){
+        var _val = $(this).val();
+        if(_val == 'flex-start'){
+            $result.css({'-webkit-justify-content':_val,'justify-content':_val,'-webkit-box-pack':'start','box-pack':'start'});
+        }else if(_val == 'flex-end'){
+            $result.css({'-webkit-justify-content':_val,'justify-content':_val,'-webkit-box-pack':'end','box-pack':'end'});
+            changeCss('end');
+        }else if(_val == 'center'){
+            $result.css({'-webkit-justify-content':_val,'justify-content':_val,'-webkit-box-pack':'center','box-pack':'center'});
+            changeCss('center');
+        }else if(_val == 'space-between'){
+            $result.css({'-webkit-justify-content':_val,'justify-content':_val,'-webkit-box-pack':'justify','box-pack':'justify'});
+            changeCss('justify');
+        }
+        // 组合结果代码
+        function changeCss(oldVal){
+            _justifyContentCode = '\n&nbsp;&nbsp;&nbsp;&nbsp;/* 主轴对齐 */'
+                                  +'\n&nbsp;&nbsp;&nbsp;&nbsp;-webkit-justify-content:'+_val+';'
+                                  +'\n&nbsp;&nbsp;&nbsp;&nbsp;justify-content:'+_val+';'
+                                  +'\n&nbsp;&nbsp;&nbsp;&nbsp;-webkit-box-pack:'+oldVal+';'
+                                  +'\n&nbsp;&nbsp;&nbsp;&nbsp;box-pack:'+oldVal+';';
+        }
+    })
+    // 侧轴对齐
+    $alignItems.on('change',function(){
+        var _val = $(this).val(),
+            _flex_direction = $flexDirection.val();
+        if(_val == 'flex-start'){
+            $result.css({'-webkit-align-items':_val,'align-items':_val,'-webkit-box-align':'start','box-align':'start'});
+            changeCss('start');
+        }else if(_val == 'flex-end'){
+            $result.css({'-webkit-align-items':_val,'align-items':_val,'-webkit-box-align':'end','box-align':'end'});
+            changeCss('end');
+        }else if(_val == 'center'){
+            $result.css({'-webkit-align-items':_val,'align-items':_val,'-webkit-box-align':'center','box-align':'center'});
+            changeCss('center');
+        }
+        if(_val == 'stretch'){
+            $result.css({'-webkit-align-items':_val,'align-items':_val,'-webkit-box-align':'stretch','box-align':'stretch'});
+            changeCss('stretch');
+            if(_flex_direction == 'column'){
+                $result.find('.item').css('width','auto');
+            }else{
+                $result.find('.item').css('height','auto');
+            }
+        }else{
+            $result.find('.item').css({'width':'','height':''});
+        }
+        // 组合结果代码
+        function changeCss(oldVal){
+            _alignItemsCode = '\n&nbsp;&nbsp;&nbsp;&nbsp;/* 侧轴对齐 */'
+                              +'\n&nbsp;&nbsp;&nbsp;&nbsp;-webkit-align-items:'+_val+';'
+                              +'\n&nbsp;&nbsp;&nbsp;&nbsp;align-items:'+_val+';'
+                              +'\n&nbsp;&nbsp;&nbsp;&nbsp;-webkit-box-align:'+oldVal+';'
+                              +'\n&nbsp;&nbsp;&nbsp;&nbsp;box-align:'+oldVal+';';
+        }
+    })
+    // 生成代码
+    $codeBtn.on('click',function(){
+        var _flexDirection = $flexDirection.val(),
+            _justifyContent = $justifyContent.val(),
+            _alignItems = $alignItems.val();
+        _codeResult = '';
+        if(_flexDirection != 'row'){
+            _codeResult += _flexDirectionCode;
+        }
+        if(_justifyContent != 'flex-start'){
+            _codeResult += _justifyContentCode;
+        }
+        if(_alignItems != 'flex-start'){
+            _codeResult += _alignItemsCode;
+        }
+        $codeResult.html(
+                        '.result{'
+                        +_codeResult
+                        +'\n}'
+                        );
+    });
+</script>
+</body>
+</html>
